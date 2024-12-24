@@ -1,0 +1,616 @@
+<html>
+
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <script type='text/javascript' src='https://www.x3dom.org/download/x3dom.js'></script>
+    <!-- <script src='./x3dom-full.js'></script> -->
+    <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+
+<body>
+    <h1>Penalty Challenge</h1>
+    <x3d width="100%" height="80%">
+        <scene>
+            <!-- Viewpointy-->
+            <viewpoint 
+                DEF="ViewpointStart" 
+                id="viewpointStart" 
+                position="0 30 64"
+                orientation="1 0 0 -0.15"
+                description="Viewpoint - start">
+            </viewpoint>
+            <viewpoint 
+                DEF="ViewpointStrzal" 
+                id="viewpointStrzal" 
+                position="0 5 18"
+                description="Viewpoint - strzal">
+            </viewpoint>
+            <viewpoint 
+                DEF="ViewpointBramkarz" 
+                id="viewpointBramkarz" 
+                position="0 15 -115"
+                orientation="0 1 0 3.14"
+                description="Viewpoint - bramkarz">
+            </viewpoint>
+            <viewpoint 
+                DEF="ViewpointPerspektywa" 
+                id="viewpointPerspektywa" 
+                position="270 120 520"
+                orientation="0 1 0 0.55"
+                description="Viewpoint - perspektywa">
+            </viewpoint>
+            <viewpoint 
+                DEF="ViewpointGora" 
+                id="viewpointGora" 
+                position="0 1000 150"
+                orientation="1 0 0 -1.57"
+                description="Viewpoint - góra">
+            </viewpoint>
+
+             <!-- Tło -->
+             <Background 
+                groundAngle='[1.309, 1.57]' groundColor='(0.1 0.8 0.0, 0.3 0.8 0.2, 0.3 0.30 0.3)'
+                skyAngle='[1.309, 1.57]' skyColor='(0.0 0.2 0.7, 0.0 0.5 1.0, 1.0 1.0 1.0)'>
+            </Background>
+
+            <!-- Mgła -->
+            <Fog color='0.8, 0.8, 0.8' fogType='EXPONENTIAL' visibilityRange='3000'></Fog>
+
+            <!-- Słońce -->
+            <transform DEF="Slonce" translation="-120 75 -250">
+                <shape>
+                    <appearance>
+                        <material diffuseColor="1 1 0"></material>
+                        <imageTexture url="img/sun.jpg"></imageTexture>
+                    </appearance>
+                    <sphere radius="10"></sphere>
+                </shape>
+            </transform>
+            <!-- Obrót słońca wokół własnej osi -->
+            <timeSensor DEF="Czas_Slonce" loop="true" cycleInterval="10"></timeSensor>
+            <orientationInterpolator DEF="Obrot_Slonce" 
+                key="0 0.5 1" 
+                keyValue="0 1 0 0, 0 1 0 3.14, 0 1 0 6.28"></orientationInterpolator>
+            <!-- ROUTE -->
+            <route fromNode="Czas_Slonce" fromField="fraction_changed" toNode="Obrot_Slonce" toField="set_fraction"></route>
+            <route fromNode="Obrot_Slonce" fromField="value_changed" toNode="Slonce" toField="set_rotation"></route>
+            <!-- Światło punktowe -->
+            <pointLight color="1 1 1" intensity="1" location="10 20 0" radius="100" on="true"></pointLight>
+
+            <!-- Powierchnia -->
+            <transform id="Powierchnia" translation="0 -3 150">
+                <shape>
+                    <appearance>
+                        <material id="materialPowierchni" diffusiveColor="0 0 0"></material>
+                    </appearance>
+                    <box size="800 3 900"></box>
+                </shape>
+            </transform>
+
+            <!-- Góry -->
+            <transform DEF="Gora" translation="0 50 -250" scale="17 3 4">
+                <shape>
+                    <appearance>
+                        <material diffuseColor="0.133 0.259 0.129"></material>
+                    </appearance>
+                    <cone height="25" bottomRadius="12"></cone>
+                </shape>
+            </transform>
+            <transform translation="150 0 0" scale="1.3 1.3 1.2"><transform USE="Gora"></transform></transform>
+            <transform translation="-200 0 0" scale="1 1 1.1"><transform USE="Gora"></transform></transform>
+            <transform translation="-90 0 -100" scale="1.4 1.3 1.1" rotation="0 1 0 1.57"><transform USE="Gora"></transform></transform>
+            <transform translation="-100 0 150" scale="1.5 1 1" rotation="0 1 0 1.57"><transform USE="Gora"></transform></transform>
+            <transform translation="-110 0 350" scale="1.6 1 1.1" rotation="0 1 0 1.57"><transform USE="Gora"></transform></transform>
+            <transform translation="-160 0 800" scale="1.4 1.1 1"><transform USE="Gora"></transform></transform>
+            <transform translation="100 0 800" scale="1.5 1.3 1"><transform USE="Gora"></transform></transform>
+            <transform translation="700 0 -100" scale="1.5 1.3 1.4" rotation="0 1 0 1.57"><transform USE="Gora"></transform></transform>
+            <transform translation="600 0 150" scale="1.6 1.2 1" rotation="0 1 0 1.57"><transform USE="Gora"></transform></transform>
+            <transform translation="610 0 350" scale="1.7 1.3 0.9" rotation="0 1 0 1.57"><transform USE="Gora"></transform></transform>
+            
+            <!-- Chmury -->
+            <material id="ChmuraMaterial" diffuseColor="1 1 1" transparency="0.4"></material>
+            <transform DEF="Chmura" translation="0 80 -150">
+                <group DEF="ChmuraElementy">
+                    <transform DEF="ChmuraElement" translation="0 -30 0">
+                        <shape>
+                            <appearance>
+                                <protoinstance use="ChmuraMaterial"></protoinstance>
+                            </appearance>
+                            <sphere radius="17"></sphere>
+                        </shape>
+                    </transform>
+                    <transform translation="-14 -30 0">
+                        <shape>
+                            <appearance>
+                                <protoinstance use="ChmuraMaterial"></protoinstance>
+                            </appearance>
+                            <sphere radius="17"></sphere>
+                        </shape>
+                    </transform>
+                    <transform translation="14 -30 0">
+                        <shape>
+                            <appearance>
+                                <protoinstance use="ChmuraMaterial"></protoinstance>
+                            </appearance>
+                            <sphere radius="17"></sphere>
+                        </shape>
+                    </transform>
+                </group>
+            </transform>
+            <transform translation="-10 10 0" scale="0.9 0.9 0.9"><transform USE="Chmura"></transform></transform>
+            <transform translation="-20 -30 0" scale="0.8 0.8 0.8"><transform USE="Chmura"></transform></transform>
+            <transform translation="-30 5 0" scale="0.75 0.75 0.75"><transform USE="Chmura"></transform></transform>
+            <transform translation="20 0 0" scale="0.9 0.8 0.9"><transform USE="Chmura"></transform></transform>
+            <!-- PositionInterpolator dla ruchu -->
+            <positionInterpolator DEF="RuchChmury" 
+                key="0 0.25 0.5 0.75 1" 
+                keyValue="-350 130 -300 350 130 -300 350 130 500 -350 130 500 -350 130 -300">
+            </positionInterpolator>
+            <!-- TimeSensor dla ruchu -->
+            <timeSensor DEF="CzasRuchuChmury" 
+                cycleInterval="50" 
+                loop="true">
+            </timeSensor>
+            <!-- ROUTE do animacji pozycji (cała grupa chmur) -->
+            <ROUTE fromNode="CzasRuchuChmury" 
+                   fromField="fraction_changed" 
+                   toNode="RuchChmury" 
+                   toField="set_fraction">
+            </ROUTE>
+            <ROUTE fromNode="RuchChmury" 
+                   fromField="value_changed" 
+                   toNode="Chmura" 
+                   toField="set_translation">
+            </ROUTE>      
+            
+            <!-- Murawa -->
+            <transform id="Murawa" translation="0 -1.5 150">
+                <shape>
+                    <appearance>
+                        <imageTexture url="img/murawa.jpg"></imageTexture>
+                    </appearance>
+                    <box size="300 3 500"></box>
+                </shape>
+            </transform>
+
+            <!-- Linie murawy -->
+            <transform id="Linia" translation="-125 0 150" rotation="0 1 0 1.57">
+                <shape>
+                    <appearance>
+                        <material id="materialLinii" diffuseColor="1 1 1"></material>
+                    </appearance>
+                    <box size="450 0.2 1"></box>
+                </shape>
+            </transform>
+            <transform id="Punkt" translation="0 0 155">
+                <shape>
+                    <appearance>
+                        <material id="materialPunktu" diffuseColor="1 1 1"></material>
+                    </appearance>
+                    <box size="3 0.2 3"></box>
+                </shape>
+            </transform>
+            <transform translation="250 0 0" scale="1 1 1"><transform USE="Linia"></transform></transform>
+            <transform translation="-83 0 -200" scale="1 1 0.555" rotation="0 1 0 1.57"><transform USE="Linia"></transform></transform>
+            <transform translation="-83 0 250" scale="1 1 0.555" rotation="0 1 0 1.57"><transform USE="Linia"></transform></transform>
+            <transform translation="-83 0 30" scale="1 1 0.555" rotation="0 1 0 1.57"><transform USE="Linia"></transform></transform>
+            <!-- 1 połowa -->
+            <transform translation="70 0 -64" scale="1 1 0.14"><transform USE="Linia"></transform></transform>
+            <transform translation="180 0 -64" scale="1 1 0.14"><transform USE="Linia"></transform></transform>
+            <transform translation="-36.5 0 -137" scale="1 1 0.245" rotation="0 1 0 1.57"><transform USE="Linia"></transform></transform>
+            <transform translation="50 0 -60" scale="1 1 0.2"><transform USE="Linia"></transform></transform>
+            <transform translation="200 0 -60" scale="1 1 0.2"><transform USE="Linia"></transform></transform>
+            <transform translation="-50 0 -110" scale="1 1 0.335" rotation="0 1 0 1.57"><transform USE="Linia"></transform></transform>
+            <transform translation="0 0 -160" scale="1 1 1"><transform USE="Punkt"></transform></transform>
+            <transform translation="-120 0 -225" scale="1 1 1"><transform USE="Punkt"></transform></transform>
+            <transform translation="120 0 -225" scale="1 1 1"><transform USE="Punkt"></transform></transform>
+            <!-- 2 połowa -->
+            <transform translation="70 0 322" scale="1 1 0.14"><transform USE="Linia"></transform></transform>
+            <transform translation="180 0 322" scale="1 1 0.14"><transform USE="Linia"></transform></transform>
+            <transform translation="-36.5 0 187" scale="1 1 0.245" rotation="0 1 0 1.57"><transform USE="Linia"></transform></transform>
+            <transform translation="50 0 300" scale="1 1 0.2"><transform USE="Linia"></transform></transform>
+            <transform translation="200 0 300" scale="1 1 0.2"><transform USE="Linia"></transform></transform>
+            <transform translation="-50 0 160" scale="1 1 0.335" rotation="0 1 0 1.57"><transform USE="Linia"></transform></transform>
+            <transform translation="0 0 150" scale="1 1 1"><transform USE="Punkt"></transform></transform>
+            <transform translation="-120 0 215" scale="1 1 1"><transform USE="Punkt"></transform></transform>
+            <transform translation="120 0 215" scale="1 1 1"><transform USE="Punkt"></transform></transform>
+
+            <!-- Bramki -->
+            <transform id="Bramka" translation="-22 9 -75" scale="6 6 6" rotation="0 1 0 -1.57">
+                <Inline url="blender_models/bramka.x3d"></Inline>
+            </transform>
+            <transform translation="0 0 300" rotation="0 1 0 3.14"><transform USE="Bramka"></transform></transform>
+
+            <!-- Piłka -->
+            <transform id="Pilka" translation="0 1.75 -5">
+                <shape>
+                    <appearance>
+                        <imageTexture url="img/pilka.jpg"></imageTexture>
+                    </appearance>
+                    <sphere radius="2"></box>
+                </shape>
+            </transform>
+            <transform id="Pilka2" translation="0 1.75 -76.5">
+                <shape>
+                    <appearance>
+                        <material id="materialPilki2" transparency="0.5"></material>
+                    </appearance>
+                    <sphere radius="2"></sphere>
+                </shape>
+            </transform>            
+
+             <!-- Bandy reklamowe-->
+             <transform id="Banda" translation="0 4 -100">
+                <shape>
+                    <appearance>
+                        <material id="materialBandy" diffuseColor="0 0 0"></material>
+                    </appearance>
+                    <box size="300 7 2"></box>
+                </shape>
+            </transform>
+            <transform translation="0 0 500" scale="1 1 1"><transform USE="Banda"></transform></transform>
+            <transform translation="250 0 150" scale="1.67 1 1" rotation="0 1 0 1.57"><transform USE="Banda"></transform></transform>
+            <transform translation="-50 0 150" scale="1.67 1 1" rotation="0 1 0 1.57"><transform USE="Banda"></transform></transform>
+
+            <!-- Trybuny -->
+            <transform id="Trybuna" translation="-200 5 150" scale="10 12 28.6">
+                <Inline url="blender_models/trybuna.x3d"></Inline>
+            </transform>
+            <transform translation="0 0 310" scale="1 1 1" rotation="0 1 0 3.14"><transform USE="Trybuna"></transform></transform>
+            <transform translation="120 0 50" scale="1 1 0.8" rotation="0 1 0 -1.57"><transform USE="Trybuna"></transform></transform>
+            <transform translation="-120 0 250" scale="1 1 0.8" rotation="0 1 0 1.57"><transform USE="Trybuna"></transform></transform>
+
+            <!-- PIŁKARZ -->
+            <transform DEF="Pilkarz" translation="-3 0.5 -2" rotation="0 1 0 -0.6" scale="1 1.2 1">
+                <group DEF="PilkarzElementy">
+                    <!-- głowa -->
+                    <transform id="glowa" translation="0 7 0">
+                        <!-- twarz -->
+                        <shape>
+                            <appearance>
+                                <material id="materialGlowy" diffuseColor="1.0 0.6 0.4"></material>
+                            </appearance>
+                            <box size="3 2 3"></box>
+                        </shape>
+                        <!-- włosy -->
+                        <transform id="wlosy" translation="0 1.375 0">
+                            <shape>
+                                <appearance>
+                                    <material id="materialWlosow" diffuseColor="0.2 0.129 0.047"></material>
+                                </appearance>
+                                <box size="3 0.75 3"></box>
+                            </shape>
+                        </transform>
+                        <!-- oczy -->
+                        <transform id="leweOko" translation="-0.8 0.5 -1.4">
+                            <shape>
+                                <appearance>
+                                    <material id="materialLewegoOka" diffuseColor="0 0 0"></material>
+                                </appearance>
+                                <sphere radius="0.4"></sphere>
+                            </shape>
+                        </transform>
+                        <transform id="praweOko" translation="0.8 0.5 -1.4">
+                            <shape>
+                                <appearance>
+                                    <material id="materialPrawegoOka" diffuseColor="0 0 0"></material>
+                                </appearance>
+                                <sphere radius="0.4"></sphere>
+                            </shape>
+                        </transform>
+                    </transform>
+
+                    <!-- koszulka -->
+                    <transform id="koszulka" translation="0 4.25 0">
+                        <shape>
+                            <appearance>
+                                <material id="materialKoszulki" diffuseColor="0.678 0 0"></material>
+                            </appearance>
+                            <box size="3 3.5 3"></box>
+                        </shape>
+                    </transform>
+
+                    <!-- ręce -->
+                    <transform id="lewaReka" translation="-2 4 0">
+                        <shape>
+                            <appearance>
+                                <material id="materialLewejReki" diffuseColor="1 0.6 0.4"></material>
+                            </appearance>
+                            <box size="1 3 1"></box>
+                        </shape>
+                    </transform>
+                    <transform id="prawaReka" translation="2 4 0">
+                        <shape>
+                            <appearance>
+                                <material id="materialPrawejReki" diffuseColor="1 0.6 0.4"></material>
+                            </appearance>
+                            <box size="1 3 1"></box>
+                        </shape>
+                    </transform>
+
+                    <!-- spodenki -->
+                    <transform id="spodenki" translation="0 2.15 0">
+                        <!-- góra -->
+                        <shape>
+                            <appearance>
+                                <material id="materialSpodenek" diffuseColor="0.039 0 0.451"></material>
+                            </appearance>
+                            <box size="3 0.7 3"></box>
+                        </shape>
+                        <!-- lewy -->
+                        <transform id="leweSpodenki" translation="-0.8 -0.5 0">
+                            <shape>
+                                <appearance>
+                                    <material id="materialSpodenek_L" diffuseColor="0.039 0 0.451"></material>
+                                </appearance>
+                                <box size="1.4 0.7 3"></box>
+                            </shape>
+                        </transform>
+                        <!-- prawy -->
+                        <transform id="praweSpodenki" translation="0.8 -0.5 0">
+                            <shape>
+                                <appearance>
+                                    <material id="materialSpodenek_P" diffuseColor="0.039 0 0.451"></material>
+                                </appearance>
+                                <box size="1.4 0.7 3"></box>
+                            </shape>
+                        </transform>
+                    </transform>
+
+                    <!-- nogi -->
+                    <transform id="lewaNoga" translation="-0.7 0.7 0">
+                        <shape>
+                            <appearance>
+                                <material id="materialLewejNogi" diffuseColor="1 0.6 0.4"></material>
+                            </appearance>
+                            <box size="1 1.2 1"></box>
+                        </shape>
+                    </transform>
+                    <transform id="prawaNoga" translation="0.7 0.7 0">
+                        <shape>
+                            <appearance>
+                                <material id="materialPrawejNogi" diffuseColor="1 0.6 0.4"></material>
+                            </appearance>
+                            <box size="1 1.2 1"></box>
+                        </shape>
+                    </transform>
+
+                    <!-- buty -->
+                    <transform id="lewyBut" translation="-0.7 -0.2 -0.45">
+                        <shape>
+                            <appearance>
+                                <material id="materialLewegoButa" diffuseColor="0 0.918 1"></material>
+                            </appearance>
+                            <box size="1 0.8 1.8"></box>
+                        </shape>
+                    </transform>
+                    <transform id="prawyBut" translation="0.7 -0.2 -0.45">
+                        <shape>
+                            <appearance>
+                                <material id="materialPrawegoButa" diffuseColor="0 0.918 1"></material>
+                            </appearance>
+                            <box size="1 0.8 1.8"></box>
+                        </shape>
+                    </transform>
+                </group>
+            </transform>
+
+            <!-- BRAMKARZ -->
+            <transform DEF="Bramkarz" translation="0 0.5 -75" rotation="0 1 0 3.14" scale="1 1.2 1">
+                <group DEF="BramkarzElementy">
+                    <!-- głowa -->
+                    <transform id="glowa" translation="0 7 0">
+                        <!-- twarz -->
+                        <shape>
+                            <appearance>
+                                <material diffuseColor="0.5 0.3 0.1"></material>
+                            </appearance>
+                            <box size="3 2 3"></box>
+                        </shape>
+                        <!-- włosy -->
+                        <transform id="wlosy" translation="0 1.375 0">
+                            <shape>
+                                <appearance>
+                                    <material diffuseColor="0 0 0"></material>
+                                </appearance>
+                                <box size="3 0.75 3"></box>
+                            </shape>
+                        </transform>
+                        <!-- oczy -->
+                        <transform id="leweOko" translation="-0.8 0.5 -1.4">
+                            <shape>
+                                <appearance>
+                                    <material id="materialLewegoOka2" diffuseColor="0 0 0"></material>
+                                </appearance>
+                                <sphere radius="0.4"></sphere>
+                            </shape>
+                        </transform>
+                        <transform id="praweOko" translation="0.8 0.5 -1.4">
+                            <shape>
+                                <appearance>
+                                    <material id="materialPrawegoOka2" diffuseColor="0 0 0"></material>
+                                </appearance>
+                                <sphere radius="0.4"></sphere>
+                            </shape>
+                        </transform>
+                    </transform>
+
+                    <!-- koszulka -->
+                    <transform id="koszulka" translation="0 4.25 0">
+                        <shape>
+                            <appearance>
+                                <material diffuseColor="0.8 0.82 0"></material>
+                            </appearance>
+                            <box size="3 3.5 3"></box>
+                        </shape>
+                    </transform>
+
+                    <!-- ręce -->
+                    <transform id="lewaReka" translation="-2 4 0">
+                        <shape>
+                            <appearance>
+                                <material diffuseColor="1 1 0"></material>
+                            </appearance>
+                            <box size="1 3 1"></box>
+                        </shape>
+                    </transform>
+                    <transform id="lewaRekawica" translation="-2 2 0">
+                        <shape>
+                            <appearance>
+                                <material diffuseColor="0.1 0.1 0.4"></material>
+                            </appearance>
+                            <box size="1 1 1"></box>
+                        </shape>
+                    </transform>
+                    <transform id="prawaReka" translation="2 4 0">
+                        <shape>
+                            <appearance>
+                                <material diffuseColor="1 1 0"></material>
+                            </appearance>
+                            <box size="1 3 1"></box>
+                        </shape>
+                    </transform>
+                    <transform id="prawaRekawica" translation="2 2 0">
+                        <shape>
+                            <appearance>
+                                <material diffuseColor="0.1 0.1 0.4"></material>
+                            </appearance>
+                            <box size="1 1 1"></box>
+                        </shape>
+                    </transform>
+
+                    <!-- spodenki -->
+                    <transform id="spodenki" translation="0 2.15 0">
+                        <!-- góra -->
+                        <shape>
+                            <appearance>
+                                <material diffuseColor="0 0 0"></material>
+                            </appearance>
+                            <box size="3 0.7 3"></box>
+                        </shape>
+                        <!-- lewy -->
+                        <transform id="leweSpodenki" translation="-0.8 -0.5 0">
+                            <shape>
+                                <appearance>
+                                    <material diffuseColor="0 0 0"></material>
+                                </appearance>
+                                <box size="1.4 0.7 3"></box>
+                            </shape>
+                        </transform>
+                        <!-- prawy -->
+                        <transform id="praweSpodenki" translation="0.8 -0.5 0">
+                            <shape>
+                                <appearance>
+                                    <material diffuseColor="0 0 0"></material>
+                                </appearance>
+                                <box size="1.4 0.7 3"></box>
+                            </shape>
+                        </transform>
+                    </transform>
+
+                    <!-- nogi -->
+                    <transform id="lewaNoga" translation="-0.7 0.7 0">
+                        <shape>
+                            <appearance>
+                                <material diffuseColor="0.5 0.3 0.1"></material>
+                            </appearance>
+                            <box size="1 1.2 1"></box>
+                        </shape>
+                    </transform>
+                    <transform id="prawaNoga" translation="0.7 0.7 0">
+                        <shape>
+                            <appearance>
+                                <material diffuseColor="0.5 0.3 0.1"></material>
+                            </appearance>
+                            <box size="1 1.2 1"></box>
+                        </shape>
+                    </transform>
+
+                    <!-- buty -->
+                    <transform id="lewyBut" translation="-0.7 -0.2 -0.45">
+                        <shape>
+                            <appearance>
+                                <material diffuseColor="1 0 0"></material>
+                            </appearance>
+                            <box size="1 0.8 1.8"></box>
+                        </shape>
+                    </transform>
+                    <transform id="prawyBut" translation="0.7 -0.2 -0.45">
+                        <shape>
+                            <appearance>
+                                <material diffuseColor="1 0 0"></material>
+                            </appearance>
+                            <box size="1 0.8 1.8"></box>
+                        </shape>
+                    </transform>
+                </group>
+            </transform>
+            <timeSensor DEF="BramkarzTimer" cycleInterval="2" loop="true"></timeSensor>
+            <positionInterpolator DEF="BramkarzPosition" key="0 0.25 0.5 0.75 1" keyValue="0 0 -75 -20 0 -75 0 0 -75 20 0 -75 0 0 -75"></positionInterpolator>
+
+            <ROUTE fromNode="BramkarzTimer" fromField="fraction_changed" toNode="BramkarzPosition" toField="set_fraction"></ROUTE>
+            <ROUTE fromNode="BramkarzPosition" fromField="value_changed" toNode="Bramkarz" toField="set_translation"></ROUTE>
+        </scene>
+    </x3d>
+
+    <!-- kontener z viewpointami -->
+    <div class="viewpoint-buttons">
+        <h3>Change viewpoint:</h3>
+        <button onclick="setViewpoint('viewpointStart')">1</button>
+        <button onclick="setViewpoint('viewpointStrzal')">2</button>
+        <button onclick="setViewpoint('viewpointBramkarz')">3</button>
+        <button onclick="setViewpoint('viewpointPerspektywa')">4</button>
+        <button onclick="setViewpoint('viewpointGora')">5</button>
+    </div>
+
+     <div class="przyciski">
+        <!-- kontrolki do zmiany wyglądu -->
+        <div class="kontrolki">
+            <!-- skóra -->
+            <h3>Skin color:
+                <input type="color" id="kolorSkory" value="#ff9966">
+            </h3>
+
+            <!-- włosy -->
+            <h3>Hair color:
+                <input type="color" id="kolorWlosow" value="#33210c">
+            </h3>
+
+            <!-- koszulka -->
+            <h3>Shirt color:
+                <input type="color" id="kolorKoszulki" value="#ad0000">
+            </h3>
+
+            <!-- spodenki -->
+            <h3>Shorts color:
+                <input type="color" id="kolorSpodenek" value="#0a0073">
+            </h3>
+
+            <!-- buty -->
+            <h3>Boots color:
+                <input type="color" id="kolorButow" value="#00eaff">
+            </h3>
+        </div>
+        
+        <!-- strzelanie -->
+        <div class="kontrolkiStrzelania">
+        <h4>Direction of shot:</h4>
+            L
+            <input 
+                type="range" 
+                id="shotDirection" 
+                min="-30" 
+                max="30" 
+                step="0.01" 
+                value="0"
+            >
+            R
+            <button onclick="shoot()">SHOT</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>
