@@ -2,7 +2,7 @@
 
 Penalty Challenge is a **3D browser game** where players test their skills in a penalty shootout. It offers an immersive football experience, combining **3D** visuals with interactive gameplay. Designed for players of all ages.
 
-Technologies used in the project: 
+Technologies used in the project:
 - **HTML**
 - **CSS**
 - **JavaScript**
